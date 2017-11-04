@@ -1,0 +1,72 @@
+---
+kind: ConfigMap  
+apiVersion: v1  
+metadata:  
+  name: innovationday
+  namespace: default
+data:  
+  default.json: |-
+    {
+        "message": "Hello Sales and Billing!"
+    }
+---
+apiVersion: extensions/v1beta1  
+kind: Deployment  
+metadata:  
+  labels:
+    app: innovationday
+  name: innovationday
+  namespace: default
+spec:  
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: innovationday
+  template:
+    metadata:
+      labels:
+        k8s-app: innovationday
+    spec:
+      containers:
+      - name: innovationday
+        imagePullPolicy: Never
+        image: innovation_day_image
+        command:
+        - npm
+        args:
+        - run
+        - dev
+        ports:
+        - containerPort: 8080
+        - containerPort: 5858
+        volumeMounts:
+        - name: code
+          mountPath: /app
+        - name: configuration
+          mountPath: /app/config
+      volumes:
+      - name: code
+        hostPath:
+          path: /Users/divin.paul/codebase/innovationDay
+      - name: configuration
+        configMap:
+          name: innovationday
+---
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: innovationday
+  namespace: default
+  labels:
+    app: innovationday
+spec:  
+  selector:
+    k8s-app: innovationday
+  ports:
+  - name: app-port
+    port: 8080
+    nodePort: 30005
+  - name: debug-port
+    port: 5858
+    nodePort: 30006
+  type: NodePort
