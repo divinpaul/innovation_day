@@ -47,7 +47,7 @@ spec:
       volumes:
       - name: code
         hostPath:
-          path: /Users/divin.paul/codebase/innovationDay
+          path: /Users/divin.paul/codebase/innovationday
       - name: configuration
         configMap:
           name: innovationday

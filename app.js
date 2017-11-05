@@ -2,8 +2,6 @@ var express = require('express');
 var app     = express();
 
 app.get('/', function (req, res) {
-  debugger
-  console.log('new requesy !!!!')
   res.json('Hello Sales and billing');
 })
 
